@@ -1,0 +1,119 @@
+---
+Input Files:
+  # List of level 2 input files to contruct oversampling level 3 file
+  # - S5P_RPRO_L2__O3_____20190228T235304_20190301T013633_07145_01_010107_20190625T021559.nc
+  # - S5P_RPRO_L2__O3_____20190301T013435_20190301T031803_07146_01_010107_20190625T021759.nc
+  # - S5P_RPRO_L2__O3_____20190301T031605_20190301T045933_07147_01_010107_20190625T021937.nc
+
+  # - S5P_OFFL_L2__O3_____20190805T211537_20190805T225707_09385_01_010107_20190811T225102.nc
+  # - S5P_OFFL_L2__O3_____20190805T193408_20190805T211537_09384_01_010107_20190811T213230.nc
+  # - S5P_OFFL_L2__O3_____20190805T175238_20190805T193408_09383_01_010107_20190811T195148.nc
+  # - S5P_OFFL_L2__O3_____20190805T161108_20190805T175238_09382_01_010107_20190811T173312.nc
+  # - S5P_OFFL_L2__O3_____20190805T142939_20190805T161108_09381_01_010107_20190811T160539.nc
+  # - S5P_OFFL_L2__O3_____20190805T124809_20190805T142939_09380_01_010107_20190811T145438.nc
+  # - S5P_OFFL_L2__O3_____20190805T110640_20190805T124809_09379_01_010107_20190811T125702.nc
+  # - S5P_OFFL_L2__O3_____20190805T092510_20190805T110640_09378_01_010107_20190811T105614.nc
+  # - S5P_OFFL_L2__O3_____20190805T074341_20190805T092510_09377_01_010107_20190811T091808.nc
+  # - S5P_OFFL_L2__O3_____20190805T060211_20190805T074341_09376_01_010107_20190811T074756.nc
+  # - S5P_OFFL_L2__O3_____20190805T042041_20190805T060211_09375_01_010107_20190811T055221.nc
+  # - S5P_OFFL_L2__O3_____20190805T023912_20190805T042041_09374_01_010107_20190811T035609.nc
+  - S5P_OFFL_L2__O3_____20190805T005742_20190805T023912_09373_01_010107_20190811T021422.nc
+Output File:
+  # Level 3 oversampled filename
+  - S5P_SAO_O3T_L3_test.nc
+Regrid Fields:
+  # Include the name of the level 2 file fields to be oversampled. Next to lines for each variable
+  # -var_def to set the level 3 file variable [group in netCDF4 where to place variable, variable name, variable type, fill value]
+  # -var_met as many metadata values you want to add each with [name,value,type]
+  # Currently these types are implemented: char, int8, int16, int32, float32, float64
+  ozone_total_vertical_column:
+    var_def: [key_science_data, ozone_total_vertical_column, float64, -1.0e+30]
+    var_met:
+      - [comment, ozone total vertical column, char]
+      - [units, du, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 500, float64]
+  ozone_effective_temperature:
+    var_def: [key_science_data, ozone_temperature, float64, -1.0e30]
+    var_met:
+      - [coment, ozone effective temperature, char]
+      - [units, du, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 500, float64]
+  ring_scale_factor:
+    var_def: [/, ring, float64, -1.0e2]
+    var_met:
+      - [met1, val1, char]
+  effective_albedo:
+    var_def: [support_data, albedo, float64, -10000]
+    var_met:
+      - [met2, val2, char]
+Filter Fields:
+  # Include the name of the level 2 file fields that should be used to filter out
+  # pixels in the oversampling. Accepted operators are '!=', '==', '<=', '<', '>'
+  # and '>='. For each field include each condition in a new line
+  # Example:
+  # field name:
+  #   - [operator,value]
+  #   - ...
+  ozone_total_vertical_column:
+    - [">=", 0.0]
+    - ["<=", 0.45]
+  ozone_effective_temperature:
+    - [">=", 180]
+    - ["<=", 260]
+  ring_scale_factor:
+    - [">=", 0.0]
+    - ["<=", 0.15]
+  effective_albedo:
+    - [">=", -0.5]
+    - ["<=", 1.5]
+  solar_zenith_angle:
+    - [">=", 0.0]
+    - ["<=", 85.0]
+Runtime Parameters:
+  # Include parameters needed for the calculation or static metadata values that
+  L3prodID: OMHCHOd
+  DEBUG: 2 # Set 1 for log
+  res: 1.0
+  minLat: -90
+  minLon: -180
+  maxLat: 90
+  maxLon: 180
+  Lv2Dir: ./tropomi_o3
+  Lv3Dir: ./
+  l2_lat: latitude # Level 2 file variable containing latitude pixel center
+  l2_lon: longitude # Level 2 file variable containing longitude pixel center
+  l2_lat_bounds: latitude_bounds # Level 2 file variable containing latitude pixel bounds
+  l2_lon_bounds: longitude_bounds # Level 2 file variable containing longitude pixel bounds
+  l2_weights: ozone_total_vertical_column_precision # Level 2 file variable containing weights (usually column uncertainty)
+  Instrument: "TROPOMI" # Current options: OMI, GOME-1, SCIAMACHY, GOME-2A, GOME-2B, OMPS-NM, OMPS-N20, TROPOMI
+  output_control?: True
+Metadata:
+  # Include metadata. Each entry should contain [value,type]
+  L3prodID: [S5P_SAO_O3T_L3, char]
+  APP: [SAO_POPY, char]
+  APPVersion: [0.0.0, char]
+  LongName: [To be decided, char]
+  ProcessingLevel: [Level 3, char]
+  ContactPersonName: [Kelly Chance, char]
+  ContactPersonRole: [Lead algorithm scientist, char]
+  ContactPersonEmail: [kchance@cfa.harvard.edu, char]
+  Date: [2005-07-16, char]
+  Day: [197, int16]
+  DayOfYear: [197, int16]
+  ECSCollection: [003, char]
+  EndOrbit: [5340, int32]
+  EndTime: [2005-07-17T00:00:00.00000z, char]
+  OrbitCount: [15, int16]
+  OrbitsProcessed: [15, int16]
+  PertinentOrbitCount: [15, int16]
+  ProcessingCenter: [OMI SIPS, char]
+  Source: [S5P, char]
+  StartOrbit: [5326, int32]
+  StartDate: [2005-07-16, char]
+  TDOPFIntendedPurpose: [Forward Processing, char]
+  TDOPFVersion: [1302, char]
+  TotalOrbits: [15, int16]
+  Year: [2005, int16]
+  ProcessingHost: [Linux ominion618 2.6.22.6 i686, char]

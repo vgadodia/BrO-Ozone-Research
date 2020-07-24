@@ -1,0 +1,115 @@
+Input Files:
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t044203_o38900_2019m0501t081325.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t112804_o38904_2019m0501t152205.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t011902_o38898_2019m0501t051124.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t080503_o38902_2019m0501t105545.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t195535_o38909_2019m0501t220651.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t030032_o38899_2019m0501t062419.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t163235_o38907_2019m0501t201636.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t181405_o38908_2019m0501t201907.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t145104_o38906_2019m0501t185900.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t062333_o38901_2019m0501t105540.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t231836_o38911_2019m0502t024932.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0430t233732_o38897_2019m0501t015404.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t213706_o38910_2019m0501t235121.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t094634_o38903_2019m0501t114805.h5
+  - OMPS-NPP_NMTO3-L2_v2.1_2019m0501t130934_o38905_2019m0501t170849.h5
+Output File:
+  # Level 3 oversampled filename
+  - SAO_NPP_O3T_L3_2019-05-01.nc
+Regrid Fields:
+  # Include the name of the level 2 file fields to be oversampled. Next to lines for each variable
+  # -var_def to set the level 3 file variable [group in netCDF4 where to place variable, variable name, variable type, fill value]
+  # -var_met as many metadata values you want to add each with [name,value,type]
+  # Currently these types are implemented: char, int8, int16, int32, float32, float64
+  ColumnAmountO3:
+    var_def: [key_science_data, ColumnAmountO3, float64, -1.0e+30]
+    var_met:
+      - [comment, O3 total vertical column, char]
+      - [units, du, char]
+  CloudPressure:
+    var_def: [key_science_data, CloudPressure, float64, -1.0e+30]
+    var_met:
+      - [comment, CloudPressure, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 1013, float64]
+  RadiativeCloudFraction:
+    var_def: [key_science_data, RadiativeCloudFraction, float64, -1.0e+30]
+    var_met:
+      - [comment, RadiativeCloudFraction, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 1, float64]
+  Reflectivity331:
+    var_def: [key_science_data, Reflectivity331, float64, -1.0e+30]
+    var_met:
+      - [comment, Effective Surface Reflectivity at 331 nm, char]
+      - [units, 1, char]
+  Reflectivity360:
+    var_def: [key_science_data, Reflectivity360, float64, -1.0e+30]
+    var_met:
+      - [comment, Effective Surface Reflectivity at 360 nm, char]
+      - [units, 1, char]
+  UVAerosolIndex:
+    var_def: [key_science_data, UV Aerosol Index, float64, -1.0e+30]
+    var_met:
+      - [comment, UV Aerosol Index, char]
+  fc:
+    var_def: [key_science_data, fc, float64, -1.0e+30]
+    var_met:
+      - [comment, Mixed LER Model (Cloud Fraction) Parameter, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 1, float64]
+  AlgorithmFlags:
+    var_def: [key_science_data, Algorithm Flags, float64, -1.0e+30]
+    var_met:
+      - [comment, Algorithm Flags, char]
+  SolarZenithAngle:
+    var_def: [key_science_data, SolarZenithAngle, float64, -1.0e+30]
+    var_met:
+      - [comment, SolarZenithAngle, char]
+Filter Fields:
+  # Include the name of the level 2 file fields that should be used to filter out
+  # pixels in the oversampling. Accepted operators are '!=', '==', '<=', '<', '>'
+  # and '>='. For each field include each condition in a new line
+  # Example:
+  # field name:
+  #   - [operator,value]
+  #   - ...
+  RadiativeCloudFraction:
+    - [<=, 1.0]
+    - [">=", 0]
+  AlgorithmFlags:
+    - [">", 0]
+    - ["!=", 10]
+  ColumnAmountO3:
+    - [">", 50]
+    - [<, 600]
+Runtime Parameters:
+  # Include parameters needed for the calculation or static metadata values that
+  DEBUG: 3
+  res: 0.25
+  minLat: -90
+  minLon: -180
+  maxLat: 90
+  maxLon: 180
+  Lv2Dir: ./files
+  Lv3Dir: ./
+  l2_lat: Latitude # Level 2 file variable containing latitude pixel center
+  l2_lon: Longitude # Level 2 file variable containing longitude pixel center
+  l2_lat_bounds: LatitudeCorner # Level 2 file variable containing latitude pixel bounds
+  l2_lon_bounds: LongitudeCorner # Level 2 file variable containing longitude pixel bounds
+  l2_weights: ColumnAmountO3 # Level 2 file variable containing weights (usually column uncertainty), Set to "unit" for no weights applied
+  Instrument: OMPS-NM # Current options: OMI, GOME-1, SCIAMACHY, GOME-2A, GOME-2B, OMPS-NM, OMPS-N20, TROPOMI
+  output_control?: true
+Metadata:
+  # Include metadata. Each entry should contain [value,type]
+  L3prodID: [NPP_SAO_O3T_L3, char]
+  Date: ["2019-05-01", char]
+  Day: [1, int16]
+  DayOfYear: [1, int16]
+  ECSCollection: ["001", char]
+  EndTime: [2019-05-01-T00:00:00.00000z, char]
+  OrbitCount: [15, int16]
+  Source: [NPP, char]
+  StartDate: ["2019-05-01", char]
+  Year: [2019, int16]

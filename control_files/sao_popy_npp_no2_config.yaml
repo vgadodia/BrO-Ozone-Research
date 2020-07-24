@@ -1,0 +1,95 @@
+---
+Input Files:
+  # List of level 2 input files to contruct oversampling level 3 file
+  # - OMPS-NPP-HCHO-L2_2019m0315t005451-o038231_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t023622-o038232_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t041752-o038233_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t055922-o038234_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t074053-o038235_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t092223-o038236_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t110354-o038237_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t124524-o038238_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t142654-o038239_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t160824-o038240_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t174955-o038241_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t193125-o038242_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t211256-o038243_2020m0420t173355.nc
+  # - OMPS-NPP-HCHO-L2_2019m0315t225426-o038244_2020m0420t173355.nc
+  - OMPS-N20-HCHO-L2_2019m0315t000445-o006834_2020m0420t201017.nc
+Output File:
+  # Level 3 oversampled filename
+  - NPP_SAO_HCHO_L3_test.nc
+Regrid Fields:
+  # Include the name of the level 2 file fields to be oversampled. Next to lines for each variable
+  # -var_def to set the level 3 file variable [group in netCDF4 where to place variable, variable name, variable type, fill value]
+  # -var_met as many metadata values you want to add each with [name,value,type]
+  # Currently these types are implemented: char, int8, int16, int32, float32, float64
+  column_amount:
+    var_def: [key_science_data, n2o_column, float64, -1.0e+30]
+    var_met:
+      - [comment, n2o total vertical column, char]
+      - [units, du, char]
+  cloud_fraction:
+    var_def: [key_science_data, cloud_fraction, float64, -1.0e+30]
+    var_met:
+      - [comment, cloud fraction, char]
+      - [valid_min, 0, float64]
+      - [valid_max, 1, float64]
+Filter Fields:
+  # Include the name of the level 2 file fields that should be used to filter out
+  # pixels in the oversampling. Accepted operators are '!=', '==', '<=', '<', '>'
+  # and '>='. For each field include each condition in a new line
+  # Example:
+  # field name:
+  #   - [operator,value]
+  #   - ...
+  cloud_fraction:
+    - [">=", 0.0]
+    - ["<=", 1.0]
+  main_data_quality_flag:
+    - ["==", 0]
+Runtime Parameters:
+  # Include parameters needed for the calculation or static metadata values that
+  DEBUG: 2
+  res: 0.5
+  minLat: -90
+  minLon: -180
+  maxLat: 90
+  maxLon: 180
+  Lv2Dir: ./omps-no2
+  Lv3Dir: ./
+  l2_lat: latitude # Level 2 file variable containing latitude pixel center
+  l2_lon: longitude # Level 2 file variable containing longitude pixel center
+  l2_lat_bounds: latitude_bounds # Level 2 file variable containing latitude pixel bounds
+  l2_lon_bounds: longitude_bounds # Level 2 file variable containing longitude pixel bounds
+  l2_weights: column_uncertainty # Level 2 file variable containing weights (usually column uncertainty)
+  Instrument: "OMI" # Current options: OMI, GOME-1, SCIAMACHY, GOME-2A, GOME-2B, OMPS-NM, OMPS-N20, TROPOMI
+  output_control?: True
+Metadata:
+  # Include metadata. Each entry should contain [value,type]
+  L3prodID: [NPP_SAO_N2O_L3, char]
+  APP: [SAO_POPY, char]
+  APPVersion: [0.0.0, char]
+  LongName: [To be decided, char]
+  ProcessingLevel: [Level 3, char]
+  ContactPersonName: [Kelly Chance, char]
+  ContactPersonRole: [Lead algorithm scientist, char]
+  ContactPersonEmail: [kchance@cfa.harvard.edu, char]
+  Date: [2019-03-15, char]
+  Day: [197, int16]
+  DayOfYear: [197, int16]
+  ECSCollection: [003, char]
+  EndOrbit: [5340, int32]
+  EndTime: [2019-03-15-T00:00:00.00000z, char]
+  OrbitCount: [15, int16]
+  OrbitsProcessed: [15, int16]
+  PertinentOrbitCount: [15, int16]
+  ProcessingCenter: [OMI SIPS, char]
+  Source: [S5P, char]
+  StartOrbit: [5326, int32]
+  StartDate: [2019-03-15, char]
+  TDOPFIntendedPurpose: [Forward Processing, char]
+  TDOPFVersion: [1302, char]
+  TotalOrbits: [15, int16]
+  Year: [2019, int16]
+  ProcessingHost: [Linux ominion618 2.6.22.6 i686, char]
